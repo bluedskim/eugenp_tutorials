@@ -20,28 +20,27 @@ import org.springframework.boot.test.context.SpringBootTest;
 @ExtendWith(FlowableSpringExtension.class)
 @SpringBootTest
 public class ArticleWorkflowIntegrationTest {
-    static Logger logger = LoggerFactory.getLogger(ArticleWorkflowIntegrationTest.class);
-    
-    @Autowired
-    private RuntimeService runtimeService;
-    @Autowired
-    private TaskService taskService;
-    @Test
-    @Deployment(resources = { "processes/article-workflow.bpmn20.xml" })
-    void articleApprovalTest() {
-        Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("author", "test@baeldung.com");
-        variables.put("url", "http://baeldung.com/dummy");
-        runtimeService.startProcessInstanceByKey("articleReview", variables);
-        Task task = taskService.createTaskQuery()
-            .singleResult();
-        logger.info("task.getName()={}", task.getName());
-        assertEquals("Review the submitted tutorial", task.getName());
-        variables.put("approved", true);
-        logger.info("before complete={}", runtimeService.createProcessInstanceQuery().count());
-        taskService.complete(task.getId(), variables);
-        logger.info("after complete={}", runtimeService.createProcessInstanceQuery().count());
-        logger.info("task.getName()={}", task.getName());
-        assertEquals(0, runtimeService.createProcessInstanceQuery().count());
-    }
+	static Logger logger = LoggerFactory.getLogger(ArticleWorkflowIntegrationTest.class);
+
+	@Autowired
+	private RuntimeService runtimeService;
+	@Autowired
+	private TaskService taskService;
+
+	@Test
+	@Deployment(resources = { "processes/article-workflow.bpmn20.xml" })
+	void articleApprovalTest() {
+		Map<String, Object> variables = new HashMap<String, Object>();
+		variables.put("author", "test@baeldung.com");
+		variables.put("url", "http://baeldung.com/dummy");
+		runtimeService.startProcessInstanceByKey("articleReview", variables);
+		Task task = taskService.createTaskQuery().singleResult();
+		logger.info("task.getName()={}", task.getName());
+		assertEquals("Review the submitted tutorial", task.getName());
+		variables.put("approved", true);
+		logger.info("before complete={}", runtimeService.createProcessInstanceQuery().count());
+		taskService.complete(task.getId(), variables);
+		logger.info("after complete={}", runtimeService.createProcessInstanceQuery().count());
+		assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+	}
 }

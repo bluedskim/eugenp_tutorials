@@ -21,41 +21,47 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ArticleWorkflowService {
 	static Logger logger = LoggerFactory.getLogger(ArticleWorkflowService.class);
-    
-    @Autowired
-    private RuntimeService runtimeService;
-    @Autowired
-    private TaskService taskService;
 
-    @Transactional
-    public void startProcess(Article article) {
-        Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("author", article.getAuthor());
-        variables.put("url", article.getUrl());
-        ProcessInstance processInstance  = runtimeService.startProcessInstanceByKey("articleReview", variables);
-        logger.info("processInstance={}", processInstance);
-    }
+	@Autowired
+	private RuntimeService runtimeService;
+	@Autowired
+	private TaskService taskService;
 
-    @Transactional
-    public List<Article> getTasks(String assignee) {
-        List<Task> tasks = taskService.createTaskQuery()
-          .taskCandidateGroup(assignee)
-          .list();
-        
-        List<Article> articles = tasks.stream()
-          .map(task -> {
-              Map<String, Object> variables = taskService.getVariables(task.getId());
-              return new Article(
-                task.getId(), (String) variables.get("author"), (String) variables.get("url"));
-          })
-          .collect(Collectors.toList());
-        return articles;
-    }
+	@Transactional
+	public void startProcess(Article article) {
+		Map<String, Object> variables = new HashMap<String, Object>();
+		variables.put("author", article.getAuthor());
+		variables.put("url", article.getUrl());
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("articleReview", variables);
+		logger.info("processInstance={}", processInstance);
+	}
 
-    @Transactional
-    public void submitReview(Approval approval) {
-        Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("approved", approval.isStatus());
-        taskService.complete(approval.getId(), variables);
-    }
+	@Transactional
+	public List<Article> getTasks(String assignee) {
+		List<Task> tasks = taskService.createTaskQuery().taskCandidateGroup(assignee).list();
+
+		List<Article> articles = tasks.stream().map(task -> {
+			Map<String, Object> variables = taskService.getVariables(task.getId());
+			return new Article(task.getId(), (String) variables.get("author"), (String) variables.get("url"));
+		}).collect(Collectors.toList());
+		return articles;
+	}
+
+	@Transactional
+	public List<Article> getTasks() {
+		List<Task> tasks = taskService.createTaskQuery().list();
+
+		List<Article> articles = tasks.stream().map(task -> {
+			Map<String, Object> variables = taskService.getVariables(task.getId());
+			return new Article(task.getId(), (String) variables.get("author"), (String) variables.get("url"));
+		}).collect(Collectors.toList());
+		return articles;
+	}
+
+	@Transactional
+	public void submitReview(Approval approval) {
+		Map<String, Object> variables = new HashMap<String, Object>();
+		variables.put("approved", approval.isStatus());
+		taskService.complete(approval.getId(), variables);
+	}
 }

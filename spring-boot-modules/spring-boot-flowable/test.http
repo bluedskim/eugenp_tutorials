@@ -1,7 +1,4 @@
-### 전자소독필증 발급
-GET http://localhost:8080/tasks?assignee=author1 HTTP/1.1
-
-### 전자소독필증 발급
+### 새 task 등록
 POST http://localhost:8080/submit HTTP/1.1
 Content-Type: application/json
 
@@ -11,11 +8,17 @@ Content-Type: application/json
     ,"url": "url1"
 	}	
 
-### 전자소독필증 발급
+### 특정 사용자의 task 목록
+GET http://localhost:8080/tasks?assignee=author1 HTTP/1.1
+
+### 모든 task 목록
+GET http://localhost:8080/tasks HTTP/1.1
+
+### review 하기
 POST http://localhost:8080/review HTTP/1.1
 Content-Type: application/json
 
 	{
-		"id": "articleReview"
+		"id": "4ebed7e3-70ea-11eb-892d-024222232c6d"
     ,"status": true
 	}	
