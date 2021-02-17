@@ -1,0 +1,21 @@
+### 전자소독필증 발급
+GET http://localhost:8080/tasks?assignee=author1 HTTP/1.1
+
+### 전자소독필증 발급
+POST http://localhost:8080/submit HTTP/1.1
+Content-Type: application/json
+
+	{
+		"id": "id1"
+    ,"author": "author1"
+    ,"url": "url1"
+	}	
+
+### 전자소독필증 발급
+POST http://localhost:8080/review HTTP/1.1
+Content-Type: application/json
+
+	{
+		"id": "articleReview"
+    ,"status": true
+	}	

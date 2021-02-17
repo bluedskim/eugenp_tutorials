@@ -5,18 +5,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.baeldung.domain.Approval;
+import com.baeldung.domain.Article;
+
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
+import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.baeldung.domain.Approval;
-import com.baeldung.domain.Article;
-
 @Service
 public class ArticleWorkflowService {
+	static Logger logger = LoggerFactory.getLogger(ArticleWorkflowService.class);
+    
     @Autowired
     private RuntimeService runtimeService;
     @Autowired
@@ -27,7 +32,8 @@ public class ArticleWorkflowService {
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put("author", article.getAuthor());
         variables.put("url", article.getUrl());
-        runtimeService.startProcessInstanceByKey("articleReview", variables);
+        ProcessInstance processInstance  = runtimeService.startProcessInstanceByKey("articleReview", variables);
+        logger.info("processInstance={}", processInstance);
     }
 
     @Transactional
