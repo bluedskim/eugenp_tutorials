@@ -12,7 +12,13 @@ public class EventListener {
 
     @Subscribe
     public void stringEvent(String event) {
-        LOG.info("do event [" + event + "]");
+        LOG.info("do event [" + event + "] this={}", this);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         eventsHandled++;
     }
 

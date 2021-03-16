@@ -6,10 +6,13 @@ import com.google.common.eventbus.EventBus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
 
 public class GuavaEventBusUnitTest {
+    private static final Logger LOG = LoggerFactory.getLogger(GuavaEventBusUnitTest.class);
 
     private EventListener listener;
     private EventBus eventBus;
@@ -20,6 +23,7 @@ public class GuavaEventBusUnitTest {
         listener = new EventListener();
 
         eventBus.register(listener);
+        eventBus.register(new EventListener());
     }
 
     @After
@@ -30,9 +34,12 @@ public class GuavaEventBusUnitTest {
     @Test
     public void givenStringEvent_whenEventHandled_thenSuccess() {
         listener.resetEventsHandled();
-
-        eventBus.post("String Event");
-        assertEquals(1, listener.getEventsHandled());
+        LOG.info("posting String Event1");
+        eventBus.post("String Event1");
+        //assertEquals(1, listener.getEventsHandled());
+        LOG.info("posting String Event2");
+        eventBus.post("String Event2");
+        assertEquals(4, listener.getEventsHandled());
     }
 
     @Test
